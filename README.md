@@ -1,5 +1,6 @@
 # Gardener - Your Smart Plant Companion
-![iOS](https://github.com/user-attachments/assets/ab555f04-d6c4-415f-84ae-2457bb628753)
+![iOS](https://github.com/user-attachments/assets/e3144f96-a7af-4af6-9c94-f515d508b0d8)
+
 
 Gardener is an iOS application designed to help users grow and maintain healthy plants through smart recommendations and plant health monitoring. The app combines weather data, plant analysis, and expert knowledge to provide personalized gardening assistance.
 
