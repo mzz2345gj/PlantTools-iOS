@@ -24,6 +24,54 @@ struct PlantAnalysisResponse: Codable {
     let remedy: String
 }
 
+// MARK: - Watering Recommendation Models
+
+struct WateringPot: Identifiable, Codable {
+    var id = UUID()
+    var name: String = ""
+    var plantName: String = ""
+    var shape: String = "Circular" // or "Rectangular"
+    var radius: Double? = nil // cm
+    var length: Double? = nil // cm
+    var width: Double? = nil // cm
+}
+
+struct WateringYardPlant: Identifiable, Codable {
+    var id = UUID()
+    var name: String = ""
+    var area: Double = 0.0 // m^2
+}
+
+struct WateringYard: Codable {
+    var length: Double = 0.0 // m
+    var width: Double = 0.0 // m
+    var plants: [WateringYardPlant] = []
+}
+
+struct WateringAPIResponse: Codable {
+    let latitude: Double
+    let longitude: Double
+    let watering_start: String
+    let watering_end: String
+    let dailySchedule: [WateringDay]
+    let soilType: String?
+    let yardPlantType: String?
+}
+
+struct WateringDay: Codable {
+    let date: String
+    let items: [WateringDayItem]
+}
+
+struct WateringDayItem: Codable {
+    let container: String
+    let container_type: String
+    let plant: String
+    let amount: Double
+    let frequency_min: Int
+    let frequency_max: Int
+}
+
 // MARK: - Localization Manager
 
 class LocalizationManager: ObservableObject {
@@ -35,7 +83,7 @@ class LocalizationManager: ObservableObject {
     
     let translations: [String: [String: String]] = [
         "Settings": ["en": "Settings", "zh": "设置"],
-        "Home": ["en": "Home", "zh": "首页"],
+        "Home": ["en": "Home", "zh": "主页"],
         "Grow": ["en": "Grow", "zh": "种植"],
         "Check": ["en": "Check", "zh": "检查"],
         "Hello, Gardener!": ["en": "Hello, Gardener!", "zh": "你好，园丁！"],
@@ -62,7 +110,7 @@ class LocalizationManager: ObservableObject {
         "Precipitation": ["en": "Precipitation", "zh": "降水量"],
         "Soil pH": ["en": "Soil pH", "zh": "土壤pH"],
         "Edit Sensor Data": ["en": "Edit Sensor Data", "zh": "编辑传感器数据"],
-        "Your Location": ["en": "Your Location", "zh": "您的位置"],
+        "Your Location": ["en": "Your Location", "zh": "位置"],
         "Find My Location": ["en": "Find My Location", "zh": "找到我的位置"],
         "Latitude": ["en": "Latitude", "zh": "纬度"],
         "Longitude": ["en": "Longitude", "zh": "经度"],
@@ -114,7 +162,47 @@ class LocalizationManager: ObservableObject {
         "Check soil moisture before watering": ["en": "Check soil moisture before watering", "zh": "浇水前检查土壤湿度"],
         "Sunlight": ["en": "Sunlight", "zh": "阳光"],
         "Most plants need 6-8 hours of light": ["en": "Most plants need 6-8 hours of light", "zh": "大多数植物需要6-8小时光照"],
-        "Keep plants away from drafts": ["en": "Keep plants away from drafts", "zh": "让植物远离通风处"]
+        "Keep plants away from drafts": ["en": "Keep plants away from drafts", "zh": "让植物远离通风处"],
+        "Watering Plan": ["en": "Watering Plan", "zh": "浇水计划"],
+        "Get daily watering CSV": ["en": "Get daily watering CSV", "zh": "获取每日浇水CSV"],
+        "Pots": ["en": "Pots", "zh": "花盆"],
+        "Pot Name": ["en": "Pot Name", "zh": "花盆名称"],
+        "Plant Name": ["en": "Plant Name", "zh": "植物名称"],
+        "Shape": ["en": "Shape", "zh": "形状"],
+        "Circular": ["en": "Circular", "zh": "圆形"],
+        "Rectangular": ["en": "Rectangular", "zh": "矩形"],
+        "Radius (cm)": ["en": "Radius (cm)", "zh": "半径 (厘米)"],
+        "Length (cm)": ["en": "Length (cm)", "zh": "长度 (厘米)"],
+        "Width (cm)": ["en": "Width (cm)", "zh": "宽度 (厘米)"],
+        "Add Pot": ["en": "Add Pot", "zh": "添加花盆"],
+        "Yard": ["en": "Yard", "zh": "院子"],
+        "Length (m)": ["en": "Length (m)", "zh": "长度 (米)"],
+        "Width (m)": ["en": "Width (m)", "zh": "宽度 (米)"],
+        "Plants in Yard": ["en": "Plants in Yard", "zh": "院子里的植物"],
+        "Area (m²)": ["en": "Area (m²)", "zh": "面积 (平方米)"],
+        "Add Yard Plant": ["en": "Add Yard Plant", "zh": "添加院子植物"],
+        "Watering Period": ["en": "Watering Period", "zh": "浇水周期"],
+        "Start Date": ["en": "Start Date", "zh": "开始日期"],
+        "End Date": ["en": "End Date", "zh": "结束日期"],
+        "Get Watering Plan": ["en": "Get Watering Plan", "zh": "获取浇水计划"],
+        "Use Current Location": ["en": "Use Current Location", "zh": "使用当前位置"],
+        "Manual Input": ["en": "Manual Input", "zh": "手动输入"],
+        "Please enter latitude and longitude.": ["en": "Please enter latitude and longitude.", "zh": "请输入纬度和经度。"],
+        "Download CSV": ["en": "Download CSV", "zh": "下载CSV"],
+        "days of watering recommendations ready.": ["en": "days of watering recommendations ready.", "zh": "天的浇水建议已准备好。"],
+        "Soil Type": ["en": "Soil Type", "zh": "土壤类型"],
+        "Delete": ["en": "Delete", "zh": "删除"],
+        "Required": ["en": "Required", "zh": "必填"],
+        "Example: 31.23": ["en": "Example: 31.23", "zh": "示例: 31.23"],
+        "Example: 121.47": ["en": "Example: 121.47", "zh": "示例: 121.47"],
+        "CSV Preview": ["en": "CSV Preview", "zh": "CSV预览"],
+        "Pinch to zoom the table.": ["en": "Pinch to zoom the table.", "zh": "用双指缩放表格。"],
+        "CSV Table Header": ["en": "CSV Table Header", "zh": "CSV表头"],
+        "CSV Table Preview": ["en": "CSV Table Preview", "zh": "CSV表格预览"],
+        "Watering Plan Results": ["en": "Watering Plan Results", "zh": "浇水计划结果"],
+        "Add at least one pot or leave empty if not needed.": ["en": "Add at least one pot or leave empty if not needed.", "zh": "请至少添加一个花盆，或如不需要可留空。"],
+        "Enter latitude": ["en": "Enter latitude", "zh": "输入纬度"],
+        "Enter longitude": ["en": "Enter longitude", "zh": "输入经度"]
     ]
     
     init() {
@@ -835,7 +923,7 @@ struct PlantAnalysisView: View {
                             .cornerRadius(10)
                             .shadow(radius: 5)
                     } else {
-                        VStack(spacing: 8) {
+                        VStack(spacing: 18) {
                             Image(systemName: "photo.on.rectangle.angled")
                                 .resizable()
                                 .scaledToFit()
@@ -1099,6 +1187,21 @@ struct HomepageView: View {
                             )
                         }
                         .buttonStyle(ScaledButtonStyle())
+                        
+                        // Watering Plan Card
+                        Button {
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                                selectedTab = 3
+                            }
+                        } label: {
+                            FeatureCard(
+                                title: localizationManager.localizedString(for: "Watering Plan"),
+                                subtitle: localizationManager.localizedString(for: "Get daily watering CSV"),
+                                color: Color(hex: "00BCD4"),
+                                icon: "drop.fill"
+                            )
+                        }
+                        .buttonStyle(ScaledButtonStyle())
                     }
                     .padding(.horizontal)
                     
@@ -1350,6 +1453,399 @@ struct SettingsView: View {
     }
 }
 
+// MARK: - Watering View
+
+struct WateringView: View {
+    @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var apiConfig: APIConfiguration
+    @EnvironmentObject var localizationManager: LocalizationManager
+    @StateObject private var locationManager = LocationManager()
+    @State private var manualLat: String = ""
+    @State private var manualLon: String = ""
+    @State private var useCurrentLocation: Bool = true
+    @State private var pots: [WateringPot] = []
+    @State private var yard = WateringYard()
+    @State private var wateringStart = Date()
+    @State private var wateringEnd = Calendar.current.date(byAdding: .day, value: 6, to: Date()) ?? Date()
+    @State private var isLoading = false
+    @State private var errorMessage: String?
+    @State private var apiResponse: WateringAPIResponse?
+    @State private var showShareSheet = false
+    @State private var csvData: Data?
+    @FocusState private var focusedField: UUID?
+    @Binding var selectedTab: Int
+
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 8) {
+                    // Location Section
+                    GroupBox(label: Label(localizationManager.localizedString(for: "Your Location"), systemImage: "location.fill").foregroundColor(themeManager.currentAccentColor)) {
+                        Toggle(localizationManager.localizedString(for: "Use Current Location"), isOn: $useCurrentLocation)
+                            .tint(themeManager.currentAccentColor)
+                        if useCurrentLocation {
+                            Button(localizationManager.localizedString(for: "Find My Location")) {
+                                locationManager.fetchCurrentLocation()
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(themeManager.currentAccentColor)
+                            if let loc = locationManager.location {
+                                Text("Lat: \(loc.coordinate.latitude, specifier: "%.4f")")
+                                Text("Lon: \(loc.coordinate.longitude, specifier: "%.4f")")
+                            }
+                            if let error = locationManager.errorMessage {
+                                Text(error).foregroundColor(.red).font(.caption)
+                            }
+                        }
+                        Divider()
+                        VStack(alignment: .leading, spacing: 2) { // Reduced spacing from 6 to 2
+                            Text(localizationManager.localizedString(for: "Manual Input")).font(.subheadline).bold()
+                            HStack(spacing: 4) { // Reduced spacing
+                                Text(localizationManager.localizedString(for: "Latitude") + ":").frame(width: 80, alignment: .trailing)
+                                TextField(localizationManager.localizedString(for: "Example: 31.23"), text: $manualLat)
+                                    .textFieldStyle(.roundedBorder)
+                            }
+                            HStack(spacing: 4) {
+                                Text(localizationManager.localizedString(for: "Longitude") + ":").frame(width: 80, alignment: .trailing)
+                                TextField(localizationManager.localizedString(for: "Example: 121.47"), text: $manualLon)
+                                    .textFieldStyle(.roundedBorder)
+                            }
+                            Text(localizationManager.localizedString(for: "Please enter latitude and longitude.")).font(.caption).foregroundColor(.secondary)
+                        }
+                    }
+
+                    // Pots Section
+                    GroupBox(label: Label(localizationManager.localizedString(for: "Pots"), systemImage: "cube.box.fill").foregroundColor(themeManager.currentAccentColor)) {
+                        if pots.isEmpty {
+                            Text(localizationManager.localizedString(for: "Add at least one pot or leave empty if not needed.")).font(.caption).foregroundColor(.secondary)
+                        }
+                        ForEach($pots) { $pot in
+                            VStack(alignment: .leading, spacing: 4) { // Reduced spacing from 8 to 4
+                                HStack(spacing: 4) {
+                                    TextField(localizationManager.localizedString(for: "Pot Name"), text: $pot.name)
+                                        .textFieldStyle(.roundedBorder)
+                                        .focused($focusedField, equals: pot.id)
+                                    Spacer(minLength: 8)
+                                    Button(action: { pots.removeAll { $0.id == pot.id } }) {
+                                        Image(systemName: "trash").foregroundColor(.red)
+                                    }.accessibilityLabel(localizationManager.localizedString(for: "Delete"))
+                                }
+                                TextField(localizationManager.localizedString(for: "Plant Name"), text: $pot.plantName)
+                                    .textFieldStyle(.roundedBorder)
+                                Picker(localizationManager.localizedString(for: "Shape"), selection: $pot.shape) {
+                                    Text(localizationManager.localizedString(for: "Circular")).tag("Circular")
+                                    Text(localizationManager.localizedString(for: "Rectangular")).tag("Rectangular")
+                                }.pickerStyle(.segmented)
+                                if pot.shape == "Circular" {
+                                    TextField(localizationManager.localizedString(for: "Radius (cm)"), value: $pot.radius, format: .number)
+                                        .textFieldStyle(.roundedBorder)
+                                } else {
+                                    HStack(spacing: 4) {
+                                        TextField(localizationManager.localizedString(for: "Length (cm)"), value: $pot.length, format: .number)
+                                            .textFieldStyle(.roundedBorder)
+                                        TextField(localizationManager.localizedString(for: "Width (cm)"), value: $pot.width, format: .number)
+                                            .textFieldStyle(.roundedBorder)
+                                    }
+                                }
+                            }
+                            .padding(.vertical, 4) // Reduced from 8
+                            Divider()
+                        }
+                        Button(action: {
+                            pots.append(WateringPot())
+                        }) {
+                            Label(localizationManager.localizedString(for: "Add Pot"), systemImage: "plus")
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(themeManager.currentAccentColor)
+                    }
+
+                    // Yard Section
+                    GroupBox(label: Label(localizationManager.localizedString(for: "Yard"), systemImage: "leaf.fill").foregroundColor(themeManager.currentAccentColor)) {
+                        HStack(spacing: 4) {
+                            Text(localizationManager.localizedString(for: "Length (m)") + ":").frame(width: 90, alignment: .trailing)
+                            TextField(localizationManager.localizedString(for: "Required"), value: $yard.length, format: .number)
+                                .textFieldStyle(.roundedBorder)
+                            Text(localizationManager.localizedString(for: "Width (m)") + ":").frame(width: 90, alignment: .trailing)
+                            TextField(localizationManager.localizedString(for: "Required"), value: $yard.width, format: .number)
+                                .textFieldStyle(.roundedBorder)
+                        }
+                        Text(localizationManager.localizedString(for: "Plants in Yard")).font(.subheadline)
+                        ForEach($yard.plants) { $plant in
+                            HStack(spacing: 4) {
+                                TextField(localizationManager.localizedString(for: "Plant Name"), text: $plant.name)
+                                    .textFieldStyle(.roundedBorder)
+                                TextField(localizationManager.localizedString(for: "Area (m²)"), value: $plant.area, format: .number)
+                                    .textFieldStyle(.roundedBorder)
+                                Button(action: { yard.plants.removeAll { $0.id == plant.id } }) {
+                                    Image(systemName: "trash").foregroundColor(.red)
+                                }.accessibilityLabel(localizationManager.localizedString(for: "Delete"))
+                            }
+                        }
+                        Button(action: {
+                            yard.plants.append(WateringYardPlant())
+                        }) {
+                            Label(localizationManager.localizedString(for: "Add Yard Plant"), systemImage: "plus")
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(themeManager.currentAccentColor)
+                    }
+
+                    // Watering Period
+                    GroupBox(label: Label(localizationManager.localizedString(for: "Watering Period"), systemImage: "calendar").foregroundColor(themeManager.currentAccentColor)) {
+                        DatePicker(localizationManager.localizedString(for: "Start Date"), selection: $wateringStart, displayedComponents: .date)
+                        DatePicker(localizationManager.localizedString(for: "End Date"), selection: $wateringEnd, in: wateringStart..., displayedComponents: .date)
+                    }
+
+                    // Submit Button
+                    Button(action: submitWateringRequest) {
+                        HStack {
+                            if isLoading { ProgressView() }
+                            Text(localizationManager.localizedString(for: "Get Watering Plan"))
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(themeManager.currentAccentColor)
+                    .disabled(isLoading)
+
+                    // Error
+                    if let error = errorMessage {
+                        Text(error).foregroundColor(.red).font(.caption)
+                    }
+
+                    // Result
+                    if let response = apiResponse {
+                        WateringResultView(response: response, onShare: shareCSV, localizationManager: localizationManager)
+                    }
+                }
+                .padding(.horizontal)
+                .padding(.top, -32) // More negative top padding to pull content even closer
+            }
+            .navigationTitle(localizationManager.localizedString(for: "Watering Plan"))
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(leading:
+                Button {
+                    selectedTab = 0
+                } label: {
+                    Label(localizationManager.localizedString(for: "Home"), systemImage: "house.fill")
+                        .foregroundColor(themeManager.currentAccentColor)
+                }
+            )
+        }
+        .sheet(isPresented: $showShareSheet) {
+            if let csvData = csvData {
+                ShareSheet(activityItems: [csvData], fileName: "watering_plan.csv")
+            }
+        }
+    }
+
+    func submitWateringRequest() {
+        errorMessage = nil
+        isLoading = true
+        apiResponse = nil
+        csvData = nil
+        // Prepare payload
+        let lat: Double?
+        let lon: Double?
+        if useCurrentLocation, let loc = locationManager.location {
+            lat = loc.coordinate.latitude
+            lon = loc.coordinate.longitude
+        } else {
+            lat = Double(manualLat)
+            lon = Double(manualLon)
+        }
+        guard let latitude = lat, let longitude = lon else {
+            errorMessage = localizationManager.localizedString(for: "Enter a valid location.")
+            isLoading = false
+            return
+        }
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let payload: [String: Any] = [
+            "latitude": latitude,
+            "longitude": longitude,
+            "watering_start": dateFormatter.string(from: wateringStart),
+            "watering_end": dateFormatter.string(from: wateringEnd),
+            "pots": pots.map { pot in
+                var dict: [String: Any] = [
+                    "name": pot.name,
+                    "plant_name": pot.plantName,
+                    "shape": pot.shape
+                ]
+                if pot.shape == "Circular" {
+                    dict["radius"] = pot.radius ?? 0
+                } else {
+                    dict["length"] = pot.length ?? 0
+                    dict["width"] = pot.width ?? 0
+                }
+                return dict
+            },
+            "yard": [
+                "length": yard.length,
+                "width": yard.width,
+                "plants": yard.plants.map { ["name": $0.name, "area": $0.area] }
+            ]
+        ]
+        guard let url = URL(string: "https://gardenerflask.xyz/api/watering") else {
+            errorMessage = "Invalid API URL"
+            isLoading = false
+            return
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: payload)
+        } catch {
+            errorMessage = localizationManager.localizedString(for: "Data preparation failed.")
+            isLoading = false
+            return
+        }
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            DispatchQueue.main.async {
+                isLoading = false
+                if let error = error {
+                    errorMessage = localizationManager.localizedString(for: "Network error: ") + error.localizedDescription
+                    return
+                }
+                guard let data = data else {
+                    errorMessage = localizationManager.localizedString(for: "No data received.")
+                    return
+                }
+                do {
+                    let decoder = JSONDecoder()
+                    let response = try decoder.decode(WateringAPIResponse.self, from: data)
+                    apiResponse = response
+                    // Prepare CSV
+                    csvData = makeCSVData(from: response)
+                } catch {
+                    errorMessage = localizationManager.localizedString(for: "Error decoding watering plan.")
+                }
+            }
+        }.resume()
+    }
+
+    func makeCSVData(from response: WateringAPIResponse) -> Data? {
+        var csv = "Date,Container,Type,Plant,Amount (L),Frequency (per week)\n"
+        for day in response.dailySchedule {
+            for item in day.items {
+                csv += "\(day.date),\(item.container),\(item.container_type),\(item.plant),\(String(format: "%.2f", item.amount)),\(item.frequency_min)-\(item.frequency_max)\n"
+            }
+        }
+        return csv.data(using: .utf8)
+    }
+
+    func shareCSV() {
+        showShareSheet = true
+    }
+}
+
+struct WateringResultView: View {
+    let response: WateringAPIResponse
+    var onShare: () -> Void
+    var localizationManager: LocalizationManager
+    
+    @Environment(\.colorScheme) var colorScheme
+    @State private var magnifyBy: CGFloat = 1.0
+    @State private var lastMagnify: CGFloat = 1.0
+    
+    // Extracted CSV table rows to help type checker
+    var csvTableRows: some View {
+        ForEach(response.dailySchedule, id: \.date) { day in
+            ForEach(day.items.enumerated().map { (idx, item) in (id: item.uniqueID(for: day.date) + "-\(idx)", item: item) }, id: \.id) { pair in
+                let item = pair.item
+                HStack {
+                    Text(day.date).frame(width: 100, alignment: .leading)
+                    Text(item.container).frame(width: 100, alignment: .leading)
+                    Text(item.container_type).frame(width: 80, alignment: .leading)
+                    Text(item.plant).frame(width: 120, alignment: .leading)
+                    Text(String(format: "%.2f", item.amount)).frame(width: 80, alignment: .trailing)
+                    Text("\(item.frequency_min)-\(item.frequency_max)").frame(width: 120, alignment: .trailing)
+                }
+                .font(.caption2)
+                .background(colorScheme == .dark ? Color.black.opacity(0.03) : Color.white.opacity(0.7))
+            }
+        }
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("\(response.dailySchedule.count) " + localizationManager.localizedString(for: "days of watering recommendations ready.")).font(.headline)
+            if let soil = response.soilType {
+                Text(localizationManager.localizedString(for: "Soil Type") + ": " + soil)
+            }
+            Button(action: onShare) {
+                Label(localizationManager.localizedString(for: "Download CSV"), systemImage: "square.and.arrow.down")
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(.blue)
+            .accessibilityLabel(localizationManager.localizedString(for: "Download CSV"))
+            Divider()
+            Text(localizationManager.localizedString(for: "CSV Preview")).font(.subheadline).bold().padding(.bottom, 2)
+            Text(localizationManager.localizedString(for: "Pinch to zoom the table.")).font(.caption).foregroundColor(.secondary).padding(.bottom, 4)
+            // Magnifiable CSV Table Preview
+            ScrollView([.horizontal, .vertical], showsIndicators: true) {
+                VStack(alignment: .leading, spacing: 0) {
+                    HStack {
+                        Text(localizationManager.localizedString(for: "Date")).bold().frame(width: 100, alignment: .leading)
+                        Text(localizationManager.localizedString(for: "Container")).bold().frame(width: 100, alignment: .leading)
+                        Text(localizationManager.localizedString(for: "Type")).bold().frame(width: 80, alignment: .leading)
+                        Text(localizationManager.localizedString(for: "Plant")).bold().frame(width: 120, alignment: .leading)
+                        Text(localizationManager.localizedString(for: "Amount (L)")).bold().frame(width: 80, alignment: .trailing)
+                        Text(localizationManager.localizedString(for: "Frequency (per week)")).bold().frame(width: 120, alignment: .trailing)
+                    }
+                    .padding(.vertical, 4)
+                    .background(colorScheme == .dark ? Color.white.opacity(0.08) : Color.gray.opacity(0.15))
+                    .accessibilityLabel(localizationManager.localizedString(for: "CSV Table Header"))
+                    csvTableRows
+                }
+                .padding(.vertical, 4)
+                .scaleEffect(magnifyBy)
+                .animation(.easeInOut(duration: 0.15), value: magnifyBy)
+                .gesture(
+                    MagnificationGesture()
+                        .onChanged { value in
+                            magnifyBy = min(max(0.7, lastMagnify * value), 3.0)
+                        }
+                        .onEnded { value in
+                            lastMagnify = min(max(0.7, lastMagnify * value), 3.0)
+                        }
+                )
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel(localizationManager.localizedString(for: "CSV Table Preview"))
+            }
+            .background(
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(colorScheme == .dark ? Color.white.opacity(0.04) : Color(.systemGray6))
+                    .shadow(color: Color.black.opacity(0.07), radius: 4, x: 0, y: 2)
+            )
+            .padding(.vertical, 4)
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(colorScheme == .dark ? Color.white.opacity(0.02) : Color(.systemGray6))
+                .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 2)
+        )
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(localizationManager.localizedString(for: "Watering Plan Results"))
+    }
+}
+
+struct ShareSheet: UIViewControllerRepresentable {
+    var activityItems: [Any]
+    var fileName: String
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        let tmpURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+        if let data = activityItems.first as? Data {
+            try? data.write(to: tmpURL)
+            return UIActivityViewController(activityItems: [tmpURL], applicationActivities: nil)
+        }
+        return UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+    }
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+}
+
 // MARK: - Main ContentView
 
 struct ContentView: View {
@@ -1385,12 +1881,21 @@ struct ContentView: View {
             .tag(2)
             
             NavigationView {
+                WateringView(selectedTab: $selectedTab)
+                    .environmentObject(localizationManager)
+            }
+            .tabItem {
+                Label(localizationManager.localizedString(for: "Watering"), systemImage: "drop.fill")
+            }
+            .tag(3)
+            
+            NavigationView {
                 SettingsView()
             }
             .tabItem {
                 Label(localizationManager.localizedString(for: "Settings"), systemImage: "gearshape.fill")
             }
-            .tag(3)
+            .tag(4)
         }
         .accentColor(themeManager.currentAccentColor)
         .environmentObject(themeManager)
@@ -1432,5 +1937,11 @@ extension Color {
             blue:  Double(b) / 255,
             opacity: Double(a) / 255
         )
+    }
+}
+
+extension WateringDayItem {
+    func uniqueID(for date: String) -> String {
+        "\(date)-\(container)-\(plant)"
     }
 }
