@@ -6,7 +6,7 @@ Gardener is an iOS application designed to help users grow and maintain healthy 
 
 ## Requirements
 
-- iOS 15.6 or later
+- iOS 16 or later
 - iPhone or iPad
 - Internet connection for weather data and plant analysis
 - Camera access for plant health checkup
